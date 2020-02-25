@@ -133,7 +133,7 @@ mongoose.connect(dbUrl, {useNewUrlParser: true, useUnifiedTopology: true},(error
     }
 })
 
-var server = app.listen(3000, () => {
+var server = app.listen(80, () => {
     console.log("Server is listening on port", server.address().port)
     var date = new Date("2020-02-27T16:00:00.000Z")
     console.log(date.getTime());
