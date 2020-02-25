@@ -9,6 +9,8 @@ app.use(bodyParser.urlencoded({extended: false}))
 
 var dbUrl = "mongodb+srv://admin:nU.wAAFTrLxHu-A-.3jH@clockin-ocbha.mongodb.net/ClockIn?retryWrites=true&w=majority"
 
+const port = process.env.PORT || 3000;
+
 var Shift = mongoose.model('Shift', {
     start: Number, 
     finish: Number,
@@ -133,7 +135,7 @@ mongoose.connect(dbUrl, {useNewUrlParser: true, useUnifiedTopology: true},(error
     }
 })
 
-var server = app.listen(80, () => {
+var server = app.listen(port, () => {
     console.log("Server is listening on port", server.address().port)
     var date = new Date("2020-02-27T16:00:00.000Z")
     console.log(date.getTime());
