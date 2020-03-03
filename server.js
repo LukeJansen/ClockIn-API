@@ -12,6 +12,8 @@ var pass = process.end.DB_PASS
 
 var dbUrl = `mongodb+srv://${user}:${pass}@clockin-ocbha.mongodb.net/ClockIn?retryWrites=true&w=majority`
 
+print(dbUrl)
+
 const port = process.env.PORT || 3000;
 
 var Shift = mongoose.model('Shift', {
