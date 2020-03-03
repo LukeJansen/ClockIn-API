@@ -7,7 +7,10 @@ app.use(express.static(__dirname))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: false}))
 
-var dbUrl = "mongodb+srv://admin:nU.wAAFTrLxHu-A-.3jH@clockin-ocbha.mongodb.net/ClockIn?retryWrites=true&w=majority"
+var user = process.env.DB_USER
+var pass = process.end.DB_PASS
+
+var dbUrl = "mongodb+srv://user:pass@clockin-ocbha.mongodb.net/ClockIn?retryWrites=true&w=majority"
 
 const port = process.env.PORT || 3000;
 
