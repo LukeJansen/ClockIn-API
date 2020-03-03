@@ -8,7 +8,7 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: false}))
 
 var user = process.env.DB_USER
-var pass = process.end.DB_PASS
+var pass = process.env.DB_PASS
 
 var dbUrl = `mongodb+srv://${user}:${pass}@clockin-ocbha.mongodb.net/ClockIn?retryWrites=true&w=majority`
 
