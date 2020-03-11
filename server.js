@@ -15,8 +15,8 @@ var dbUrl = `mongodb+srv://${user}:${pass}@clockin-ocbha.mongodb.net/ClockIn?ret
 const port = process.env.PORT || 3000;
 
 var Shift = mongoose.model('Shift', {
-    start: Number, 
-    finish: Number,
+    start: String, 
+    finish: String,
     location: String,
     role: String,
     users: Array
@@ -95,7 +95,7 @@ app.post('/shifts', (req, res) => {
 app.post('/shifts/update', async (req, res) => {
 
     try{
-        var shift = await Shift.findOne({_id:req.body._id})
+        var shift = await Shift.findOne({_id:req.body._ID})
 
         shift.location = req.body.Location
         shift.role = req.body.Role
