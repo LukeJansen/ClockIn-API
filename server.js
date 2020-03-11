@@ -21,11 +21,6 @@ var Shift = mongoose.model('Shift', {
     role: String
 })
 
-var UserShift = mongoose.model("UserShift", {
-    userID: String,
-    shiftID: String
-})
-
 var User = mongoose.model("User", {
     firstName: String,
     lastName: String,
@@ -97,6 +92,26 @@ app.post('/shifts', (req, res) => {
     }
 })
 
+app.post('/shifts/update', async (req, res) => {
+
+    try{
+        var shift = await Shift.findOne({_id:req.body._id})
+
+        shift.location = req.body.location
+        shift.role = req.body.role
+        shift.start = req.body.start
+        shift.finish = req.body.finish
+
+        shift.save()
+
+        res.sendStatus(200)
+    }
+    catch (error){
+        console.log(error)
+        res.sendStatus(400)
+    }
+})
+
 app.post('/shifts/assign', (req, res) => {
 
     try{
@@ -140,6 +155,4 @@ mongoose.connect(dbUrl, {useNewUrlParser: true, useUnifiedTopology: true},(error
 
 var server = app.listen(port, () => {
     console.log("Server is listening on port", server.address().port)
-    var date = new Date("2020-02-27T16:00:00.000Z")
-    console.log(date.getTime());
 })
