@@ -101,6 +101,7 @@ app.post('/shifts/update', async (req, res) => {
         shift.role = req.body.Role
         shift.start = req.body.Start
         shift.finish = req.body.Finish
+        shift.users = req.body.Users
 
         shift.save()
 
