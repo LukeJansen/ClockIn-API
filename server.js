@@ -18,7 +18,8 @@ var Shift = mongoose.model('Shift', {
     start: Number, 
     finish: Number,
     location: String,
-    role: String
+    role: String,
+    users: Array
 })
 
 var User = mongoose.model("User", {
@@ -27,7 +28,6 @@ var User = mongoose.model("User", {
     email: String,
     phone: Number,
     dateOfBirth: Date
-
 })
 
 // DEFAULT API
@@ -97,10 +97,10 @@ app.post('/shifts/update', async (req, res) => {
     try{
         var shift = await Shift.findOne({_id:req.body._id})
 
-        shift.location = req.body.location
-        shift.role = req.body.role
-        shift.start = req.body.start
-        shift.finish = req.body.finish
+        shift.location = req.body.Location
+        shift.role = req.body.Role
+        shift.start = req.body.Start
+        shift.finish = req.body.Finish
 
         shift.save()
 
