@@ -15,11 +15,11 @@ var dbUrl = `mongodb+srv://${user}:${pass}@clockin-ocbha.mongodb.net/ClockIn?ret
 const port = process.env.PORT || 3000;
 
 var Shift = mongoose.model('Shift', {
-    start: String, 
-    finish: String,
-    location: String,
-    role: String,
-    users: Array
+    Start: String, 
+    Finish: String,
+    Location: String,
+    Role: String,
+    Users: Array
 })
 
 var User = mongoose.model("User", {
@@ -83,6 +83,7 @@ app.get('/shifts/user', async (req, res) => {
 app.post('/shifts', (req, res) => {
 
     try{
+        delete req.body._ID
         var shift = new Shift(req.body)
         var savedShift = shift.save()
         res.sendStatus(200)
@@ -97,11 +98,11 @@ app.post('/shifts/update', async (req, res) => {
     try{
         var shift = await Shift.findOne({_id:req.body._ID})
 
-        shift.location = req.body.Location
-        shift.role = req.body.Role
-        shift.start = req.body.Start
-        shift.finish = req.body.Finish
-        shift.users = req.body.Users
+        shift.Location = req.body.Location
+        shift.Role = req.body.Role
+        shift.Start = req.body.Start
+        shift.Finish = req.body.Finish
+        shift.Users = req.body.Users
 
         shift.save()
 
@@ -113,11 +114,10 @@ app.post('/shifts/update', async (req, res) => {
     }
 })
 
-app.post('/shifts/assign', (req, res) => {
+app.post('/shifts/delete', async (req, res) => {
 
     try{
-        var userShift = new UserShift(req.body)
-        var savedShift = userShift.save()
+        var shift = await Shift.deleteOne({_id:req.body._ID})
         res.sendStatus(200)
     }
     catch (error){
