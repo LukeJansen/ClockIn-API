@@ -7,11 +7,9 @@ app.use(express.static(__dirname))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: false}))
 
-// var user = process.env.DB_USER
-// var pass = process.env.DB_PASS
+var user = process.env.DB_USER
+var pass = process.env.DB_PASS
 
-var user = "admin"
-var pass = "nU.wAAFTrLxHu-A-.3jH"
 var dbUrl = `mongodb+srv://${user}:${pass}@clockin-ocbha.mongodb.net/ClockIn?retryWrites=true&w=majority`
 
 const port = process.env.PORT || 3000;
@@ -29,7 +27,8 @@ var User = mongoose.model("User", {
     lastName: String,
     email: String,
     phone: String,
-    dateOfBirth: Date
+    dateOfBirth: Date,
+    userType: String
 })
 
 // DEFAULT API
@@ -152,13 +151,12 @@ app.post('/users/update', async (req, res) => {
     try{
         var user = await User.findOne({_id:req.body._ID})
 
-        console.log(user.firstName)
-
         user.firstName = req.body.FirstName
         user.lastName = req.body.LastName
         user.email = req.body.Email
         user.phone = req.body.Phone
         user.dateOfBirth = req.body.DOB
+        user.userType = req.body.Type
 
         user.save()
 
@@ -167,6 +165,17 @@ app.post('/users/update', async (req, res) => {
     catch (error){
         console.log(error)
         res.sendStatus(400)
+    }
+})
+
+app.post('/users/delete', async (req, res) => {
+
+    try{
+        var user = await User.deleteOne({_id:req.body._ID})
+        res.sendStatus(200)
+    }
+    catch (error){
+        console.log(error)
     }
 })
 
