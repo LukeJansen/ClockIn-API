@@ -23,12 +23,12 @@ var Shift = mongoose.model('Shift', {
 })
 
 var User = mongoose.model("User", {
-    firstName: String,
-    lastName: String,
-    email: String,
-    phone: String,
-    dateOfBirth: Date,
-    userType: String
+    FirstName: String,
+    LastName: String,
+    Email: String,
+    Phone: String,
+    DOB: Date,
+    Type: Number
 })
 
 // DEFAULT API
@@ -151,12 +151,12 @@ app.post('/users/update', async (req, res) => {
     try{
         var user = await User.findOne({_id:req.body._ID})
 
-        user.firstName = req.body.FirstName
-        user.lastName = req.body.LastName
-        user.email = req.body.Email
-        user.phone = req.body.Phone
-        user.dateOfBirth = req.body.DOB
-        user.userType = req.body.Type
+        user.FirstName = req.body.FirstName
+        user.LastName = req.body.LastName
+        user.Email = req.body.Email
+        user.Phone = req.body.Phone
+        user.DOB = req.body.DOB
+        user.Type = req.body.Type
 
         user.save()
 
