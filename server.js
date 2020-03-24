@@ -7,9 +7,11 @@ app.use(express.static(__dirname))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: false}))
 
-var user = process.env.DB_USER
-var pass = process.env.DB_PASS
+// var user = process.env.DB_USER
+// var pass = process.env.DB_PASS
 
+var user = "admin"
+var pass = "nU.wAAFTrLxHu-A-.3jH"
 var dbUrl = `mongodb+srv://${user}:${pass}@clockin-ocbha.mongodb.net/ClockIn?retryWrites=true&w=majority`
 
 const port = process.env.PORT || 3000;
@@ -26,7 +28,7 @@ var User = mongoose.model("User", {
     firstName: String,
     lastName: String,
     email: String,
-    phone: Number,
+    phone: String,
     dateOfBirth: Date
 })
 
@@ -142,6 +144,29 @@ app.post('/users', (req, res) => {
     }
     catch (error){
         console.log(error)
+    }
+})
+
+app.post('/users/update', async (req, res) => {
+
+    try{
+        var user = await User.findOne({_id:req.body._ID})
+
+        console.log(user.firstName)
+
+        user.firstName = req.body.FirstName
+        user.lastName = req.body.LastName
+        user.email = req.body.Email
+        user.phone = req.body.Phone
+        user.dateOfBirth = req.body.DOB
+
+        user.save()
+
+        res.sendStatus(200)
+    }
+    catch (error){
+        console.log(error)
+        res.sendStatus(400)
     }
 })
 
