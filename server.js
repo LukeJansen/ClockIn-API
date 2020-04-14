@@ -19,7 +19,9 @@ var Shift = mongoose.model('Shift', {
     Finish: String,
     Location: String,
     Role: String,
-    Users: Array
+    Users: Array,
+    ClockIn: Map,
+    ClockOut: Map
 })
 
 var User = mongoose.model("User", {
@@ -104,6 +106,8 @@ app.post('/shifts/update', async (req, res) => {
         shift.Start = req.body.Start
         shift.Finish = req.body.Finish
         shift.Users = req.body.Users
+        shift.ClockIn = req.body.ClockIn
+        shift.ClockOut = req.body.ClockOut
 
         shift.save()
 
