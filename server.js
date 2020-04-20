@@ -10,6 +10,9 @@ app.use(bodyParser.urlencoded({extended: false}))
 var user = process.env.DB_USER
 var pass = process.env.DB_PASS
 
+user = "admin"
+pass = "nU.wAAFTrLxHu-A-.3jH"
+
 var dbUrl = `mongodb+srv://${user}:${pass}@clockin-ocbha.mongodb.net/ClockIn?retryWrites=true&w=majority`
 
 const port = process.env.PORT || 3000;
@@ -59,6 +62,7 @@ app.get('/shifts/dateSearch', (req, res) => {
     }
     catch (error){
         console.log(error)
+        res.sendStatus(400)
     }
 })
 
@@ -80,6 +84,7 @@ app.get('/shifts/user', async (req, res) => {
     }
     catch(error){
         console.log(error)
+        res.sendStatus(400)
     }
 })
 
@@ -93,6 +98,7 @@ app.post('/shifts', (req, res) => {
     }
     catch (error){
         console.log(error)
+        res.sendStatus(400)
     }
 })
 
@@ -127,6 +133,7 @@ app.post('/shifts/delete', async (req, res) => {
     }
     catch (error){
         console.log(error)
+        res.sendStatus(400)
     }
 })
 
@@ -147,6 +154,7 @@ app.post('/users', (req, res) => {
     }
     catch (error){
         console.log(error)
+        res.sendStatus(400)
     }
 })
 
@@ -180,6 +188,97 @@ app.post('/users/delete', async (req, res) => {
     }
     catch (error){
         console.log(error)
+        res.sendStatus(400)
+    }
+})
+
+app.post('/clock/in', async (req, res) => {
+
+    try{
+        var shift = await Shift.findOne({_id:req.body.shiftID})
+        
+        if(shift.ClockIn.has(req.body.userID)){
+            res.status(400).send("User has already clocked in!")
+        }
+        else if (!shift.Users.includes(req.body.userID)){
+            res.status(400).send("User is not assigned to this shift!")
+        }
+        else{
+            var time = new Date()
+            shift.ClockIn.set(req.body.userID, time.toISOString())
+        }
+
+        shift.save()
+        res.status(200).send("User clocked in!")
+    }
+    catch (error){
+        console.log(error)
+        res.sendStatus(400)
+    }
+})
+
+app.post('/clock/out', async (req, res) => {
+
+    try{
+        var shift = await Shift.findOne({_id:req.body.shiftID})
+
+        if(shift.ClockOut.has(req.body.userID)){
+            res.status(400).send("User has already clocked out!")
+        }
+        if(!shift.ClockIn.has(req.body.userID)){
+            res.status(400).send("User has not clocked in!")
+        }
+        else if (!shift.Users.includes(req.body.userID)){
+            res.status(400).send("User is not assigned to this shift!")
+        }
+        else{
+            var time = new Date()
+            shift.ClockOut.set(req.body.userID, time)
+        }
+
+        shift.save()
+        res.status(200).send("User clocked out!")
+    }
+    catch (error){
+        console.log(error)
+        res.sendStatus(400)
+    }
+})
+
+app.post('/clock/check', async (req, res) => {
+
+    try{
+        var shift = await Shift.findOne({_id:req.body.shiftID})
+
+        if (shift.ClockIn.has(req.body.userID)) var cin = true
+        if (shift.ClockOut.has(req.body.userID)) var cout = true
+
+        if (!cin && !cout) res.status(200).send("No ClockIn Status")
+        if (cin && !cout) res.status(200).send("Clocked In")
+        if (cin && cout) res.status(200).send("Clocked Out")
+
+        res.status(400).send("Data Error")
+    }
+    catch (error){
+        console.log(error)
+        res.sendStatus(400)
+    }
+})
+
+app.post('/clock/reset', async (req, res) => {
+
+    try{
+        var shift = await Shift.findOne({_id:req.body.shiftID})
+
+        if (shift.ClockIn.has(req.body.userID)) shift.ClockIn.delete(req.body.userID)
+        if (shift.ClockOut.has(req.body.userID)) shift.ClockOut.delete(req.body.userID)
+
+        shift.save()
+        res.status(200).send("User clock status reset!")
+    }
+    catch (error){
+        console.log(error)
+        res.sendStatus(400)
     }
 })
 
