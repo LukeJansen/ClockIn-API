@@ -5,15 +5,16 @@ const User = require('../models/user')
 
 // Clock In
 router.post('/in', getUser, getShift, (req, res) => {
-    if (!res.shift.Users.includes(res.user._id)){
+
+    if (!res.shift.Users.includes(req.body.UserID)){
         return res.status(400).json({message: "User is not assigned to this shift!"})
     }
-    else if(res.shift.ClockIn.has(res.user._id)){
+    else if(res.shift.ClockIn.has(req.body.UserID)){
         return res.status(400).json({message: "User has already clocked in!"})
     }
     else{
         var time = new Date()
-        res.shift.ClockIn.set(res.user._id, time.toISOString())
+        res.shift.ClockIn.set(req.body.UserID, time.toISOString())
     }
 
     res.shift.save()
@@ -22,18 +23,18 @@ router.post('/in', getUser, getShift, (req, res) => {
 
 // Clock Out
 router.post('/out', getUser, getShift, (req, res) => {
-    if (!res.shift.Users.includes(res.user._id)){
+    if (!res.shift.Users.includes(req.body.UserID)){
         return res.status(400).json({message: "User is not assigned to this shift!"})
     }
-    else if(res.shift.ClockOut.has(res.user._id)){
+    else if(res.shift.ClockOut.has(req.body.UserID)){
          return res.status(400).json({message: "User has already clocked out!"})
     }
-    else if(!res.shift.ClockIn.has(res.user._id)){
+    else if(!res.shift.ClockIn.has(req.body.UserID)){
          return res.status(400).json({message: "User has not clocked in!"})
     }
     else{
         var time = new Date()
-        res.shift.ClockOut.set(res.user._id, time.toISOString())
+        res.shift.ClockOut.set(req.body.UserID, time.toISOString())
     }
 
     res.shift.save()
@@ -42,10 +43,10 @@ router.post('/out', getUser, getShift, (req, res) => {
 
 // Clock Check
 router.get('/check', getUser, getShift, (req, res) => {
-    if (res.shift.ClockIn.has(res.user._id)) var cin = true
-    if (res.shift.ClockOut.has(res.user._id)) var cout = true
+    if (res.shift.ClockIn.has(req.body.UserID)) var cin = true
+    if (res.shift.ClockOut.has(req.body.UserID)) var cout = true
 
-    if (!res.shift.Users.includes(res.user._id)) return res.status(400).json({message: "User is not assigned to this shift!"})
+    if (!res.shift.Users.includes(req.body.UserID)) return res.status(400).json({message: "User is not assigned to this shift!"})
     if (!cin && !cout) return res.status(200).json({message: "No ClockIn Status"})
     if (cin && !cout) return res.status(200).json({message: "Clocked In"})
     if (cin && cout) return res.status(200).json({message: "Clocked Out"})
@@ -55,8 +56,8 @@ router.get('/check', getUser, getShift, (req, res) => {
 
 // Clock Reset
 router.delete('/reset', getUser, getShift, (req, res) => {
-    if (res.shift.ClockIn.has(res.user._id)) shift.ClockIn.delete(res.user._id)
-    if (res.shift.ClockOut.has(res.user._id)) shift.ClockOut.delete(res.user._id)
+    if (res.shift.ClockIn.has(req.body.UserID)) res.shift.ClockIn.delete(req.body.UserID)
+    if (res.shift.ClockOut.has(req.body.UserID)) res.shift.ClockOut.delete(req.body.UserID)
 
     res.shift.save()
     res.status(200).send("User clock status reset!")
