@@ -1,6 +1,6 @@
 const axios = require('axios')
 
-const checkUrl = "http://localhost:4000/token/check"
+const checkUrl = "http://auth.clockin.uk/token/check"
 
 async function adminCheck(req, res, next){
     const authHeader = req.headers['authorization']
