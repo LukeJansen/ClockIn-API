@@ -1,24 +1,25 @@
 const express = require('express')
 const router = express.Router()
 const Shift = require('../models/shift')
+const Auth = require('../auth')
 
 // Get All Shifts
-router.get('/', async(req, res) => {
+router.get('/', Auth.adminCheck, async(req, res) => {
     try {
         const shifts = await Shift.find()
-        res.json(shifts) 
+        res.status(200).json(shifts) 
     } catch (err){
         res.status(500).json({message: err.message})
     }
 })
 
 // Get One Shift
-router.get('/:id', getShift, async(req, res) => {
-    res.json(res.shift)
+router.get('/:id', Auth.userCheck, getShift, async(req, res) => {
+    res.status(200).json(res.shift)
 })
 
 // Add One Shift
-router.post('/', async (req, res) => {
+router.post('/', Auth.adminCheck, async (req, res) => {
     const shift = new Shift(req.body)
     try{
         const newShift = await shift.save()
@@ -29,7 +30,7 @@ router.post('/', async (req, res) => {
 })
 
 // Update One Shift
-router.post('/:id', getShift, async (req, res) => {
+router.post('/:id', Auth.adminCheck, getShift, async (req, res) => {
     if (req.body.Location != null){
         res.shift.Location = req.body.Location
     }
@@ -54,17 +55,17 @@ router.post('/:id', getShift, async (req, res) => {
 
     try{
         const updatedShift = await res.shift.save()
-        res.json(updatedShift)
+        res.status(200).json(updatedShift)
     } catch (err){
         res.status(400).json({message: err.message})
     }
 })
 
 // Delete One Shift
-router.delete('/:id', getShift, (req, res) => {
+router.delete('/:id', Auth.adminCheck, getShift, (req, res) => {
     try{
         res.shift.remove()
-        res.json({message: 'Deleted Shift!'})
+        res.status(200).json({message: 'Deleted Shift!'})
     } catch(err) {
         res.status(500).json({message: err.message})
     }

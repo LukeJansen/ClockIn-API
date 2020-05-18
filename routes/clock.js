@@ -2,9 +2,10 @@ const express = require('express')
 const router = express.Router()
 const Shift = require('../models/shift')
 const User = require('../models/user')
+const Auth = require('../auth')
 
 // Clock In
-router.post('/in', getUser, getShift, (req, res) => {
+router.post('/in', Auth.userCheck ,getUser, getShift, (req, res) => {
 
     if (!res.shift.Users.includes(req.body.UserID)){
         return res.status(400).json({message: "User is not assigned to this shift!"})
@@ -18,11 +19,11 @@ router.post('/in', getUser, getShift, (req, res) => {
     }
 
     res.shift.save()
-    res.json({message: "User clocked in!"})
+    res.status(200).json({message: "User clocked in!"})
 })
 
 // Clock Out
-router.post('/out', getUser, getShift, (req, res) => {
+router.post('/out', Auth.userCheck, getUser, getShift, (req, res) => {
     if (!res.shift.Users.includes(req.body.UserID)){
         return res.status(400).json({message: "User is not assigned to this shift!"})
     }
@@ -42,7 +43,7 @@ router.post('/out', getUser, getShift, (req, res) => {
 })
 
 // Clock Check
-router.get('/check', getUser, getShift, (req, res) => {
+router.get('/check', Auth.userCheck, getUser, getShift, (req, res) => {
     if (res.shift.ClockIn.has(req.body.UserID)) var cin = true
     if (res.shift.ClockOut.has(req.body.UserID)) var cout = true
 
@@ -55,7 +56,7 @@ router.get('/check', getUser, getShift, (req, res) => {
 })
 
 // Clock Reset
-router.delete('/reset', getUser, getShift, (req, res) => {
+router.delete('/reset', Auth.adminCheck, getUser, getShift, (req, res) => {
     if (res.shift.ClockIn.has(req.body.UserID)) res.shift.ClockIn.delete(req.body.UserID)
     if (res.shift.ClockOut.has(req.body.UserID)) res.shift.ClockOut.delete(req.body.UserID)
 

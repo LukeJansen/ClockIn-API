@@ -1,35 +1,36 @@
 const express = require('express')
 const router = express.Router()
 const User = require('../models/user')
+const Auth = require('../auth')
 
 // Get All Users
-router.get('/', async(req, res) => {
+router.get('/', Auth.adminCheck, async(req, res) => {
     try {
         const users = await User.find()
-        res.json(users) 
+        res.status(200).json(users) 
     } catch (err){
         res.status(500).json({message: err.message})
     }
 })
 
 // Get One User
-router.get('/:id', getUser, async(req, res) => {
-    res.json(res.user)
+router.get('/:id', Auth.adminCheck, getUser, async(req, res) => {
+    res.status(200).json(res.user)
 })
 
 // Add One User
-router.post('/', async (req, res) => {
+router.post('/', Auth.adminCheck, async (req, res) => {
     const user = new User(req.body)
     try{
         const newUser = await user.save()
-        res.status(201).json(newUser)
+        res.status(201).json({message: newUser.toString(), UserID: newUser._id})
     } catch (err){
         res.status(400).json({message: err.message})
     }
 })
 
 // Update One User
-router.post('/:id', getUser, async (req, res) => {
+router.post('/:id', Auth.adminCheck, getUser, async (req, res) => {
     
     if (req.body.FirstName != null){
         res.user.FirstName = req.body.FirstName
@@ -52,17 +53,17 @@ router.post('/:id', getUser, async (req, res) => {
 
     try{
         const updatedUser = await res.user.save()
-        res.json(updatedUser)
+        res.status(200).json(updatedUser)
     } catch (err){
         res.status(400).json({message: err.message})
     }
 })
 
 // Delete One User
-router.delete('/:id', getUser, (req, res) => {
+router.delete('/:id', Auth.adminCheck, getUser, (req, res) => {
     try{
         res.user.remove()
-        res.json({message: 'Deleted Shift!'})
+        res.status(200).json({message: 'Deleted Shift!'})
     } catch(err) {
         res.status(500).json({message: err.message})
     }

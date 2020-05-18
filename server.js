@@ -1,6 +1,6 @@
 if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config()
-  }
+}
 
 const express = require('express')
 const app = express()
@@ -21,5 +21,9 @@ app.use('/users', usersRouter)
 
 const clockRouter = require('./routes/clock')
 app.use('/clock', clockRouter)
+
+app.use(function(req, res, next){
+  res.status(404).json({message: "This is not a valid route!"});
+})
 
 var server = app.listen(process.env.PORT || 3000, () => console.log('Server started, listening on port ' + server.address().port))
