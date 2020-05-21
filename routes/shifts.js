@@ -14,8 +14,8 @@ router.get('/', Auth.adminCheck, async(req, res) => {
 })
 
 // Get One Shift
-router.get('/:id', Auth.userCheck, getShift, async(req, res) => {
-    res.status(200).json(res.shift)
+router.get('/:id', Auth.userCheck, getShiftsForUser, async(req, res) => {
+    res.status(200).json(res.shifts)
 })
 
 // Add One Shift
@@ -71,18 +71,34 @@ router.delete('/:id', Auth.adminCheck, getShift, (req, res) => {
     }
 })
 
-async function getShift(req, res, next) {
-    let shift
-    try {
+async function getShift(req, res, next){
+    let shift 
+    try{
         shift = await Shift.findById(req.params.id)
         if (shift == null){
-            return res.status(404).json({message: "Cannot find user with given id!"})
+            return res.status(404).json({message: "Cannot find shift with the given id!"})
+        }
+    }
+    catch (err){
+        return res.status(500).json({message: err.message})
+    }
+
+    res.shift = shift
+    next()
+}
+
+async function getShiftsForUser(req, res, next) {
+    let shifts
+    try {
+        shifts = await Shift.find({Users: req.params.id})
+        if (shifts == null){
+            return res.status(404).json({message: "Cannot find any shifts for user with given id!"})
         }
     } catch (err){
         return res.status(500).json({message: err.message})
     }
 
-    res.shift = shift
+    res.shifts = shifts
     next()
 }
 
