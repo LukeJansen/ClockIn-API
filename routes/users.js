@@ -14,7 +14,7 @@ router.get('/', Auth.adminCheck, async(req, res) => {
 })
 
 // Get One User
-router.get('/:id', Auth.userCheck, getUser, async(req, res) => {
+router.post('/single/:id', Auth.userCheck, getUser, async(req, res) => {
     if (res.user._id == req.body.UserID){
         res.status(200).json(res.user)
     } else{
@@ -34,8 +34,7 @@ router.post('/', Auth.adminCheck, async (req, res) => {
 })
 
 // Update One User
-router.post('/:id', Auth.adminCheck, getUser, async (req, res) => {
-    
+router.post('/:id', Auth.userCheck, getUser, async (req, res) => {
     if (req.body.FirstName != null){
         res.user.FirstName = req.body.FirstName
     }

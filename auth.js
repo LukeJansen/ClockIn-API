@@ -22,8 +22,6 @@ async function userCheck(req, res, next){
     const authHeader = req.headers['authorization']
     const token = authHeader && authHeader.split(' ')[1]
 
-    console.log(authHeader)
-
     if (token == null) return res.status(401).json({message: "Authorisation Not Provided!"})
 
     axios.post (checkUrl, {
