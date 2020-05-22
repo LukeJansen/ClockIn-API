@@ -14,8 +14,12 @@ router.get('/', Auth.adminCheck, async(req, res) => {
 })
 
 // Get One User
-router.get('/:id', Auth.adminCheck, getUser, async(req, res) => {
-    res.status(200).json(res.user)
+router.get('/:id', Auth.userCheck, getUser, async(req, res) => {
+    if (res.user._id == req.body.UserID){
+        res.status(200).json(res.user)
+    } else{
+        res.status(403).json({message: "User can only view their own details."})
+    }
 })
 
 // Add One User
