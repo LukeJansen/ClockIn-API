@@ -56,7 +56,7 @@ router.get('/check', Auth.userCheck, getUser, getShift, (req, res) => {
 })
 
 // Clock Reset
-router.delete('/reset', Auth.adminCheck, getUser, getShift, (req, res) => {
+router.post('/reset', Auth.adminCheck, getUser, getShift, (req, res) => {
     if (res.shift.ClockIn.has(req.body.UserID)) res.shift.ClockIn.delete(req.body.UserID)
     if (res.shift.ClockOut.has(req.body.UserID)) res.shift.ClockOut.delete(req.body.UserID)
 
@@ -68,6 +68,7 @@ async function getUser(req, res, next) {
     let user
     try {
         user = await User.findById(req.body.UserID)
+        console.log(req.body)
         if (user == null){
             return res.status(404).json({message: "Cannot find user with given id!"})
         }
